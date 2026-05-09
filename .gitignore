@@ -1,0 +1,5 @@
+venv/
+data/
+models/custom_cnn_best.h5
+__pycache__/
+*.pyc

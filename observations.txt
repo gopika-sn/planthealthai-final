@@ -1,0 +1,25 @@
+
+CUSTOM CNN:
+Training Accuracy: 29.9%
+Validation Accuracy: 25.1%
+
+MOBILENET:
+Training Accuracy: 95.7%
+Validation Accuracy: 95.2%
+
+Conclusion:
+Transfer learning significantly outperformed the custom CNN baseline.
+MobileNet achieved much faster convergence and better generalization.
+
+OBSERVATIONS
+
+1. Most predictions were accurate across multiple plant disease classes.
+
+2. The confusion matrix showed strong diagonal values, indicating correct predictions.
+
+3. Minor misclassifications occurred between visually similar diseases.
+
+4. Real-world images with background noise resulted in lower confidence scores.
+
+Conclusion:
+The model performs well on clean images and reasonably well on real-world images.

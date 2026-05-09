@@ -1,0 +1,20 @@
+CLASSIFICATION REPORT
+
+The classification report evaluates model performance for each plant disease class.
+
+Metrics Used:
+
+1. Precision:
+Measures how many predicted classes were correct.
+
+2. Recall:
+Measures how many actual disease samples were correctly identified.
+
+3. F1-Score:
+Balanced performance score between precision and recall.
+
+4. Support:
+Number of test samples per class.
+
+Observation:
+The model achieved high precision, recall, and F1-score across most plant disease categories, indicating strong classification performance.

@@ -1,0 +1,61 @@
+PROJECT TITLE:
+PlantHealth AI – Plant Disease Detection using Deep Learning
+
+
+1. PROBLEM STATEMENT:
+Farmers often find it difficult to identify plant diseases in the early stages.
+Manual diagnosis can be slow, expensive, and sometimes unavailable.
+This project aims to build an AI system that detects plant diseases automatically using leaf images.
+
+
+2. OBJECTIVE:
+To build a deep learning model that can:
+- Identify plant type
+- Detect plant disease
+- Classify whether the plant is healthy or diseased
+
+
+3. DATASET USED:
+Dataset Name: PlantVillage
+Source: Kaggle
+Total Classes: 38
+Approximate Images: 54,000+
+
+
+4. TECHNOLOGIES USED:
+- Python
+- TensorFlow
+- OpenCV
+- NumPy
+- Matplotlib
+- Streamlit
+- VS Code
+
+
+5. PROJECT WORKFLOW:
+Step 1: Download dataset
+Step 2: Preprocess images
+Step 3: Train custom CNN model
+Step 4: Apply transfer learning
+Step 5: Evaluate model
+Step 6: Build web application
+
+PROJECT RESULTS
+
+Successfully developed an AI-based plant disease detection system.
+
+Project Achievements:
+
+1. Built custom CNN architecture.
+
+2. Implemented transfer learning using MobileNetV2.
+
+3. Developed interactive web interface using Streamlit.
+
+4. Tested the model on unseen plant leaf images.
+
+5. Generated disease prediction along with confidence score.
+
+Final Outcome:
+
+The system successfully detects plant diseases and can support smart agriculture applications.

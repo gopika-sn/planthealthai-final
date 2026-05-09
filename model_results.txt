@@ -1,0 +1,19 @@
+MODEL RESULTS
+
+Model Type:
+1. Custom CNN
+2. Transfer Learning using MobileNetV2
+
+Training Configuration:
+
+Epochs: 10
+Image Size: 224 x 224
+Dataset: PlantVillage Dataset
+
+Training Outcome:
+
+The model achieved strong training and validation performance.
+Transfer learning showed better generalization on unseen images.
+
+Conclusion:
+The trained model successfully learned disease-specific leaf patterns.
