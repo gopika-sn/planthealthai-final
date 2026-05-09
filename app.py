@@ -78,12 +78,11 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model(
-        "mobilenet_streamlit.h5",
+        "mobilenet_streamlit.keras",
         compile=False
     )
 
 model = load_model()
-
 
 # ---------------- Prediction Function ----------------
 def predict_image(img):
