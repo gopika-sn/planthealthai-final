@@ -115,7 +115,7 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model(
-        "models/mobilenet_final.h5"
+        "mobilenet_final.h5"
     )
 
 model = load_model()
