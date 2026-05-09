@@ -119,6 +119,9 @@ def load_model():
         compile=False
     )
 
+# Load model once
+model = load_model()
+
 # ---------------- FORMAT LABEL ----------------
 def clean_label(label):
     label = label.replace(
