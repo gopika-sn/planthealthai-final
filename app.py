@@ -115,10 +115,9 @@ CLASS_NAMES = [
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model(
-        "mobilenet_final.h5"
+        "mobilenet_final.h5",
+        compile=False
     )
-
-model = load_model()
 
 # ---------------- FORMAT LABEL ----------------
 def clean_label(label):
