@@ -3,115 +3,78 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 
-# ---------------- PAGE CONFIG ----------------
+# Page config
 st.set_page_config(
     page_title="PlantHealth AI",
     page_icon="🌿",
     layout="centered"
 )
 
-# ---------------- STYLING ----------------
+# ---------------- CSS ----------------
 st.markdown("""
 <style>
-
 .stApp {
-    background: linear-gradient(
-        135deg,
-        #081c15,
-        #1b4332,
-        #2d6a4f
-    );
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c7744);
 }
 
 .main-title {
-    text-align: center;
-    font-size: 42px;
-    font-weight: bold;
-    color: #d8f3dc;
-    margin-top: 20px;
+    text-align:center;
+    color:white;
+    font-size:42px;
+    font-weight:bold;
 }
 
 .sub-title {
-    text-align: center;
-    font-size: 18px;
-    color: #b7e4c7;
-    margin-bottom: 25px;
+    text-align:center;
+    color:#d9fdd3;
+    font-size:18px;
+    margin-bottom:20px;
 }
 
-.result-card {
-    background: rgba(255,255,255,0.08);
-    border: 2px solid #95d5b2;
-    border-radius: 20px;
+.result-box {
+    background: rgba(255,255,255,0.12);
+    border-radius: 18px;
     padding: 20px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
+    text-align:center;
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+    border:1px solid rgba(255,255,255,0.2);
 }
 
-.confidence-card {
+.conf-box {
     background: rgba(0,0,0,0.25);
-    border-radius: 20px;
-    padding: 15px;
-    text-align: center;
-    color: #d8f3dc;
-    font-size: 22px;
-    font-weight: bold;
+    border-radius: 12px;
+    padding: 12px;
+    text-align:center;
+    color:#d9fdd3;
+    font-size:22px;
+    font-weight:bold;
+    margin-top:10px;
 }
-
-.label-text {
-    color: #95d5b2;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- CLASS LABELS ----------------
+
+# ---------------- Classes ----------------
 CLASS_NAMES = [
-    'Apple___Apple_scab',
-    'Apple___Black_rot',
-    'Apple___Cedar_apple_rust',
-    'Apple___healthy',
-    'Blueberry___healthy',
-    'Cherry_(including_sour)___Powdery_mildew',
-    'Cherry_(including_sour)___healthy',
-    'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot',
-    'Corn_(maize)___Common_rust_',
-    'Corn_(maize)___Northern_Leaf_Blight',
-    'Corn_(maize)___healthy',
-    'Grape___Black_rot',
-    'Grape___Esca_(Black_Measles)',
-    'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)',
-    'Grape___healthy',
-    'Orange___Haunglongbing_(Citrus_greening)',
-    'Peach___Bacterial_spot',
-    'Peach___healthy',
-    'Pepper,_bell___Bacterial_spot',
-    'Pepper,_bell___healthy',
-    'Potato___Early_blight',
-    'Potato___Late_blight',
-    'Potato___healthy',
-    'Raspberry___healthy',
-    'Soybean___healthy',
-    'Squash___Powdery_mildew',
-    'Strawberry___Leaf_scorch',
-    'Strawberry___healthy',
-    'Tomato___Bacterial_spot',
-    'Tomato___Early_blight',
-    'Tomato___Late_blight',
-    'Tomato___Leaf_Mold',
-    'Tomato___Septoria_leaf_spot',
-    'Tomato___Spider_mites Two-spotted_spider_mite',
-    'Tomato___Target_Spot',
-    'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
-    'Tomato___Tomato_mosaic_virus',
-    'Tomato___healthy'
+    "Apple - Apple Scab",
+    "Apple - Black Rot",
+    "Apple - Cedar Rust",
+    "Apple - Healthy",
+    "Potato - Early Blight",
+    "Potato - Late Blight",
+    "Potato - Healthy",
+    "Strawberry - Leaf Scorch",
+    "Strawberry - Healthy",
+    "Tomato - Bacterial Spot",
+    "Tomato - Early Blight",
+    "Tomato - Late Blight",
+    "Tomato - Healthy"
 ]
 
-# ---------------- MODEL ----------------
+
+# ---------------- Load Model ----------------
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model(
@@ -121,117 +84,54 @@ def load_model():
 
 model = load_model()
 
-# ---------------- FORMAT LABEL ----------------
-def clean_label(label):
-    label = label.replace(
-        "___",
-        " - "
-    )
 
-    label = label.replace(
-        "_",
-        " "
-    )
+# ---------------- Prediction Function ----------------
+def predict_image(img):
+    img = img.resize((224, 224))
+    img_array = np.array(img) / 255.0
 
-    return label
+    if len(img_array.shape) == 2:
+        img_array = np.stack([img_array]*3, axis=-1)
 
-# ---------------- HEADER ----------------
-st.markdown(
-    "<div class='main-title'>🌿 PlantHealth AI</div>",
-    unsafe_allow_html=True
-)
+    if img_array.shape[-1] == 4:
+        img_array = img_array[:, :, :3]
 
-st.markdown(
-    "<div class='sub-title'>Smart Plant Disease Detection System</div>",
-    unsafe_allow_html=True
-)
+    img_array = np.expand_dims(img_array, axis=0)
 
-# ---------------- FILE UPLOAD ----------------
+    prediction = model.predict(img_array, verbose=0)
+
+    predicted_class = np.argmax(prediction)
+    confidence = float(np.max(prediction)) * 100
+
+    return CLASS_NAMES[predicted_class], confidence
+
+
+# ---------------- UI ----------------
+st.markdown('<p class="main-title">🌿 PlantHealth AI</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Plant Disease Detection using Deep Learning</p>', unsafe_allow_html=True)
+
 uploaded_file = st.file_uploader(
-    "📷 Upload Plant Leaf Image",
+    "Upload plant leaf image",
     type=["jpg", "jpeg", "png"]
 )
 
-# ---------------- PREDICT ----------------
-if uploaded_file:
+if uploaded_file is not None:
 
-    image = Image.open(
-        uploaded_file
-    ).convert("RGB")
+    image = Image.open(uploaded_file)
 
-    # Smaller image for screenshot fitting
-    st.image(
-        image,
-        caption="Uploaded Plant Image",
-        width=350
-    )
+    st.image(image, caption="Uploaded Plant Image", width=350)
 
-    # Model preprocessing
-    image = image.resize(
-        (224, 224)
-    )
-
-    img_array = np.array(
-        image
-    ).astype("float32") / 255.0
-
-    img_array = np.expand_dims(
-        img_array,
-        axis=0
-    )
-
-    # Prediction
-    prediction = model.predict(
-        img_array,
-        verbose=0
-    )
-
-    predicted_index = np.argmax(
-        prediction
-    )
-
-    confidence = float(
-        np.max(prediction) * 100
-    )
-
-    predicted_class = clean_label(
-        CLASS_NAMES[predicted_index]
-    )
-
-    # Prediction card
-    st.markdown("<br>", unsafe_allow_html=True)
+    disease, confidence = predict_image(image)
 
     st.markdown(
-        f"""
-        <div class='result-card'>
-            <div class='label-text'>
-                Prediction
-            </div>
-            {predicted_class}
-        </div>
-        """,
+        f'<div class="result-box">{disease}</div>',
         unsafe_allow_html=True
     )
 
-    # Confidence card
-    st.markdown("<br>", unsafe_allow_html=True)
-
     st.markdown(
-        f"""
-        <div class='confidence-card'>
-            Confidence: {confidence:.2f}%
-        </div>
-        """,
+        f'<div class="conf-box">Confidence: {confidence:.2f}%</div>',
         unsafe_allow_html=True
     )
 
-    # Alerts
     if confidence < 70:
-        st.warning(
-            "Try uploading a closer leaf-only image for better accuracy."
-        )
-
-    elif confidence > 90:
-        st.success(
-            "High confidence prediction."
-        )
+        st.warning("Try uploading a closer leaf-only image for better accuracy.")
